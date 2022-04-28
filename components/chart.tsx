@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import * as d3 from "d3";
 import cloud, { Word } from "d3-cloud";
-import { WrappedBuildError } from "next/dist/server/base-server";
-import { schemeOranges } from "d3-scale-chromatic";
+import { schemeYlOrBr } from "d3-scale-chromatic";
 
 function Chart({ data, dimensions }: ChartProps) {
   const ref = useRef(null);
@@ -13,7 +12,7 @@ function Chart({ data, dimensions }: ChartProps) {
     const minYear = new Date(data.meta.minYear);
     const maxYear = new Date(data.meta.maxYear);
 
-    const colorScale = d3.scaleOrdinal(schemeOranges[9]).range();
+    const colorScale = d3.scaleOrdinal(schemeYlOrBr[9]).range();
 
     const xScale = d3
       .scaleTime()
@@ -54,7 +53,7 @@ function Chart({ data, dimensions }: ChartProps) {
           .axisBottom(xScale)
           .ticks(10)
           .tickSize(height - margin.top - margin.bottom - 200)
-          .tickFormat("")
+          .tickFormat(() => "")
       )
       .style("stroke-dasharray", "10 10")
       .attr("transform", "translate(0, 100)")
@@ -214,7 +213,9 @@ function Chart({ data, dimensions }: ChartProps) {
       .attr("x", (d) => xScale(new Date(d.startYear)))
       .attr("y", (d) => yScale(d.averageRating));
 
-    return () => svg.selectChildren().remove();
+    return () => {
+      svg.selectChildren().remove();
+    };
   }, [data, width, height, margin]);
 
   return (
